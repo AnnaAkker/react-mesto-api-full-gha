@@ -1,0 +1,6 @@
+.authorize__submit-button_disabled{
+    background-color: rgba(255, 255, 255, 1);
+    color: rgba(204, 204, 204, 1);
+    cursor: default;
+    transition: none;
+}
