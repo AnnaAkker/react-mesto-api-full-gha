@@ -1,10 +1,10 @@
 class Auth {
-    constructor(options) {
-      this._url = options.baseUrl;
-      this._headers = options.headers;
-    };
+  constructor(options) {
+    this._url = options.baseUrl;
+    this._headers = options.headers;
+  };
   
-    _getResponse(res) {return res.ok ? res.json() : Promise.reject}
+  _getResponse(res) {return res.ok ? res.json() : Promise.reject}
   
     registration(data) {
       return fetch(`${this._url}/signup`, {
@@ -29,15 +29,15 @@ class Auth {
         method: 'GET',
         headers: {
           ...this._headers,
-          Authorization: `Bearer ${token}`,
+          "Authorization" : `Bearer ${token}`,
         }
       })
       .then(this._getResponse)
     };
-  }
+  };
   
   const auth = new Auth({
-    baseUrl: 'https://auth.nomoreparties.co',
+    baseUrl: 'domainname.akkermesto.nomoredomainsrocks.ru',
     headers: {
       'Content-Type': 'application/json'
     }

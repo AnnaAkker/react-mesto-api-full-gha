@@ -30,15 +30,16 @@ function App() {
   const [isDeletePopupOpen, setDeletePopupOpen] = useState(false)
 
   const [currentUser, setCurrentUser] = useState({})
-
+  const [dataUser, setDataUser] = useState('')
+  
   const [cards, setCards] = useState([])
-
   const [isDeleteCards, setDeleteCards] = useState('')
 
-  const [loggedIn, setLodggedIn] = useState(false)
+
+  const [loggedIn, setLoggedIn] = useState(false)
   const [userEmail, setUserEmail] = useState('')
   const [isInfoTooltip, setInfoTooltip] = useState(false)
-
+  const [isCheckToken, setCheckToken] = useState(true)
   const [resultPopup, setResultPopup] = useState(false)
 
   const setStateClosePopup = useCallback(() => {
@@ -66,9 +67,50 @@ function App() {
   }
 
   useEffect(() => {
-    checkToken();
-  }, [])
+    const jwt = localStorage.getItem("jwt");
+    if (jwt) {
+      auth.checkToken(jwt)
+        .then((res) => {
+          if (res) {
+            setLoggedIn(true);
+            setUserEmail(res.email);
+            navigate('/');
+          }
+        })
+        .catch((err) => {
+          console.log(`Ошибка при проверке токена ${err}`);
+        });
+    }
+  }, [navigate]);
 
+  useEffect(() => {
+    if (localStorage.jwt) {
+      auth.checkToken(localStorage.jwt)
+        .then(res => {
+          setDataUser(res.email)
+          setLoggedIn(true)
+          setCheckToken(false)
+          navigate('/')
+        })
+        .catch((err) => {
+          console.log(`Ошибка авторизации повторного входа ${err}`)
+        });
+    } else {
+      setCheckToken(false)
+      setLoggedIn(false)
+    }
+  }, [navigate]);
+
+  useEffect(() => {
+    if (loggedIn) {
+      Promise.all([api.getInfo(localStorage.jwt), api.getCards(localStorage.jwt)])
+        .then(([dataUser, dataCard]) => {
+          setCurrentUser(dataUser)
+          setCards(dataCard.reverse());
+        })
+        .catch((err) => console.error(`Ошибка загрузки начальных данных и карточек ${err}`));
+      }
+  }, [loggedIn])
   
   function handleEditProfileClick() {
     setIsEditProfilePopupOpen(true)
@@ -97,39 +139,11 @@ function App() {
     setEvantListenerForKeydown()
   }
 
-  useEffect(() => {
-    if (loggedIn) {
-      Promise.all([api.getInfo(), api.getCards()])
-        .then(([dataUser, dataCard]) => {
-          setCurrentUser(dataUser)
-          setCards(dataCard);
-        })
-        .catch((err) => console.error(`Ошибка загрузки начальных карточек ${err}`));
-      }
-  }, [loggedIn])
-
-  function checkToken() {
-    const token = localStorage.getItem('jwt')
-    if (token) {
-      auth.checkToken(token) 
-          .then((res) => {
-            if (res && res.data) {
-              setLodggedIn(true)
-              setUserEmail(res.data.email)
-              navigate('/')
-            }
-          })
-          .catch((err) => {console.log(`Ошибка токена ${err}`)})
-    }
-  }
-
-  function handleRegistration(data) {
-    auth.registration(data)
-     .then((res) => {
-      if (res && res.data) {
+  function handleRegistration(password, email) {
+    auth.registration(password, email)
+     .then(res => {
         setInfoTooltip(true)
         navigate('/sign-in')
-      }
      })
      .catch((err) => {
       setInfoTooltip(false)
@@ -138,15 +152,13 @@ function App() {
      .finally(() => setResultPopup(true))
   }
 
-  function handleLogin(data) {
-    auth.login(data)
-     .then((res) => {
-      if (res && res.token) {
+  function handleLogin(password, email) {
+    auth.login(password, email)
+     .then(res => {
         localStorage.setItem('jwt', res.token)
-        setLodggedIn(true)
-        setUserEmail(data.email)
         navigate('/')
-      }
+        setUserEmail(res.email)
+        setLoggedIn(true)
      })
      .catch((err) => {
       setInfoTooltip(false)
@@ -156,24 +168,13 @@ function App() {
   }
 
   function onloginOut() {
-    setLodggedIn(false)
+    setLoggedIn(false)
     localStorage.removeItem('jwt')
     setUserEmail('')
   }
 
-  function handleCardDelete() {
-    api.deleteCard(isDeleteCards)
-      .then(() => {
-        setCards(cards.filter((element) => {
-          return element._id !== isDeleteCards;
-        }));
-        closePopups();
-      })
-      .catch((err) => console.error(`Ошибка удаления карточки ${err}`));
-  }
-
   function handleUpDateUser(dataUser, reset) {
-    api.setUserInfo(dataUser)
+    api.getUserInfo(dataUser, localStorage.jwt)
       .then(res => {
         setCurrentUser(res);
         closePopups();
@@ -183,7 +184,7 @@ function App() {
   }
 
   function handleUpDateAvatar(dataUser, reset) {
-    api.setAvatar(dataUser)
+    api.setAvatar(dataUser, localStorage.jwt)
       .then(res => {
         setCurrentUser(res);
         closePopups();
@@ -193,9 +194,9 @@ function App() {
   }
 
   function handleAddCards(dataCard, reset) {
-    api.addCards(dataCard)
+    api.addCards(dataCard, localStorage.jwt)
       .then((res) => {
-        setCards([res, ...cards])
+        setCards([res, ...cards]);
         closePopups();
         reset();
       })
@@ -205,13 +206,13 @@ function App() {
   const handleLikes = useCallback((card) => {
     const isLikes = card.likes.some(item => currentUser._id === item._id)
     if (isLikes) {
-    api.deleteLike(card._id)
+    api.deleteLike(card._id, localStorage.jwt)
       .then(res => {
         setCards(cards => cards.map((element) => element._id === card._id ? res : element))
       })
       .catch((err) => console.error(`Ошибка удаления лайка ${err}`)) 
     } else {
-      api.addLike(card._id)
+      api.addLike(card._id, localStorage.jwt)
         .then(res => {
           setCards(cards => cards.map((element) => element._id === card._id ? res : element))
         })
@@ -219,6 +220,14 @@ function App() {
     }
   }, [currentUser._id])
 
+  function handleCardDelete() {
+    api.deleteCard(isDeleteCards, localStorage.jwt)
+      .then(() => {
+        setCards(cards.filter((element) => element._id !== isDeleteCards));
+        closePopups();
+      })
+      .catch((err) => console.error(`Ошибка удаления карточки ${err}`));
+  }
 
   return (
 
@@ -234,11 +243,11 @@ function App() {
         <Routes>
           <Route 
             path='/sign-up'
-            element={<Register onRegistration={handleRegistration}/>}
+            element={<Register isCheckToken={isCheckToken} onRegistration={handleRegistration}/>}
           />
           <Route 
             path='/sign-in'
-            element={<Login onLogin={handleLogin}/>}
+            element={<Login isCheckToken={isCheckToken} onLogin={handleLogin}/>}
           />
           <Route 
             path='*'
@@ -256,7 +265,9 @@ function App() {
                 onCardlike={handleLikes}
                 onDeleteCard={handleDeletePopup}
                 cards={cards}
+                isCheckToken={isCheckToken}
                 loggedIn={loggedIn}
+                dataUser={dataUser}
             />}
           />
         </Routes>

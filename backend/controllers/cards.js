@@ -35,14 +35,13 @@ module.exports.addCard = (req, res, next) => {
 
 module.exports.deleteCard = (req, res, next) => {
   Card.findById(req.params.cardId)
+    .orFail(new NotFoundError(`Карточка с таким _id: ${req.params.cardId} не найдена.`))
     .then((card) => {
-      if (!card) {
-        throw new NotFoundError(`Карточка с таким _id: ${req.params.cardId} не найдена.`);
-      }
       if (!card.owner.equals(req.user._id)) {
         throw new ForbiddenError('Карточка другого пользователя');
       }
-      return Card.deleteOne({ _id: card._id });
+      return Card.deleteOne(card)
+        .orFail(new NotFoundError(`Карточка с таким _id: ${req.params.cardId} не найдена.`));
     })
     .then(() => {
       res.status(HTTP_STATUS_OK).send({ message: 'Карточка удалена' });
