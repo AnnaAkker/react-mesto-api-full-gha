@@ -9,8 +9,8 @@
 
 ## Ссылки на проект
 
-IP-адрес 158.160.55.137
+IP-адрес xxx.xxx.xxx.xxx
 
-Frontend domainname.akkermesto.nomoredomainsrocks.ru
+Frontend [domainname.akkermesto.nomoredomainsrocks.ru](domainname.akkermesto.nomoredomainsrocks.ru)
 
-Backend domainname.api.akkermesto.nomoredomainsrocks.ru
+Backend [domainname.api.akkermesto.nomoredomainsrocks.ru](domainname.api.akkermesto.nomoredomainsrocks.ru)
