@@ -9,7 +9,7 @@ const signin = require('./signin');
 
 const NotFoundError = require('../errors/NotFoundError');
 
-router.get('/crash-test', () => {
+router.get('/crash-test', (req, res, next) => {
   setTimeout(() => {
     next(new Error('Сервер сейчас упадет'));
   }, 0);
