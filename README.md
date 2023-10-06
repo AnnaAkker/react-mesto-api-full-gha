@@ -11,6 +11,6 @@
 
 IP 158.160.55.137
 
-Frontend [domainname.akkermesto.nomoredomainsrocks.ru](domainname.akkermesto.nomoredomainsrocks.ru)
+Frontend [domainname.akkermesto.nomoredomainsrocks.ru](domainname.akkermesto.nomoredomainsrocks.ru).
 
-Backend [domainname.api.akkermesto.nomoredomainsrocks.ru](domainname.api.akkermesto.nomoredomainsrocks.ru)
+Backend [domainname.api.akkermesto.nomoredomainsrocks.ru](domainname.api.akkermesto.nomoredomainsrocks.ru).
