@@ -9,7 +9,7 @@
 
 ## Ссылки на проект
 
-IP-адрес xxx.xxx.xxx.xxx
+IP xxx.xxx.xxx.xxx
 
 Frontend [domainname.akkermesto.nomoredomainsrocks.ru](domainname.akkermesto.nomoredomainsrocks.ru)
 
