@@ -9,7 +9,7 @@
 
 ## Ссылки на проект
 
-IP xxx.xxx.xxx.xxx
+IP 158.160.55.137
 
 Frontend [domainname.akkermesto.nomoredomainsrocks.ru](domainname.akkermesto.nomoredomainsrocks.ru)
 
