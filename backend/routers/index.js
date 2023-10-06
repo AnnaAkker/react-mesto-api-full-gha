@@ -10,9 +10,9 @@ const signin = require('./signin');
 const NotFoundError = require('../errors/NotFoundError');
 
 router.get('/crash-test', () => {
-    setTimeout(() => {
-        next(new Error('Сервер сейчас упадет'))
-    }, 0)
+  setTimeout(() => {
+    next(new Error('Сервер сейчас упадет'));
+  }, 0);
 });
 
 router.use('/signup', signup);
