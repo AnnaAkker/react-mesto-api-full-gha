@@ -1,3 +1,4 @@
+import React from "react";
 export default function InfoTooltip({ name, successful, isOpen, onClose }) {
 
     return (

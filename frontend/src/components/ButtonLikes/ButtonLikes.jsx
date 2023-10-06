@@ -1,4 +1,4 @@
-
+import React from "react";
 export default function ButtonLikes({ myid, card, onCardlike }) {
 
   const isLikes = card.likes.some(item => myid === item._id)
