@@ -11,6 +11,6 @@
 
 IP-адрес xxx.xxx.xxx.xxx
 
-Frontend <domainname.akkermesto.nomoredomainsrocks.ru>
+Frontend <a href="domainname.akkermesto.nomoredomainsrocks.ru"></a>
 
-Backend <domainname.api.akkermesto.nomoredomainsrocks.ru>
+Backend <a href="domainname.api.akkermesto.nomoredomainsrocks.ru"></a>
