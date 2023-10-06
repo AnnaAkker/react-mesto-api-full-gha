@@ -102,7 +102,7 @@ class Api {
 }
 
 const api = new Api({
-    baseUrl: 'domainname.api.akkermesto.nomoredomainsrocks.ru',
+    baseUrl: 'domainname.akkermesto.nomoredomainsrocks.ru',
     headers: {
         'Content-Type': 'application/json'
     }
