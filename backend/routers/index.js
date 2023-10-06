@@ -18,6 +18,8 @@ router.get('/crash-test', (req, res, next) => {
 router.use('/signup', signup);
 router.use('/signin', signin);
 
+router.use(auth);
+
 router.use('/users', auth, users);
 router.use('/cards', auth, cards);
 
