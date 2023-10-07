@@ -68,7 +68,7 @@ class Api {
             })
         })
         .then(this._checkResponse);
-    }
+    };
 
     addLike(cardId, token) {
         return fetch(`${this._url}/cards/${cardId}/likes`, {

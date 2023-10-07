@@ -33,7 +33,7 @@ class Auth {
         }
       })
       .then(this._getResponse)
-    };
+    }
   };
   
   const auth = new Auth({
